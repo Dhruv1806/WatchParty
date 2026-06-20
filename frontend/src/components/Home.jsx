@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://11.46.161.237:8080'
+console.log('Using backend URL:', import.meta.env.VITE_BACKEND_URL || "nothing found")
 
 export default function Home({ onEnterRoom }) {
   const [displayName, setDisplayName] = useState('')

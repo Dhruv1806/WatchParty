@@ -1,5 +1,6 @@
 # Dependencies
 frontend/node_modules/
+node_modules/
 
 # Build output
 frontend/dist/
@@ -11,7 +12,7 @@ frontend/.env.local
 frontend/.env.*.local
 backend/.env
 backend/.env.local
-backend/.env.*.local
+.metals
 
 # Logs
 *.log
@@ -27,8 +28,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.iml
-
-# Java / Maven
 *.class
 
 # Temporary files
