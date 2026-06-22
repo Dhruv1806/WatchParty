@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '0.0.0.0',   // ← expose to network
-    https: true,      // ← disable https
+    https: false,      // ← disable https
     proxy: {
       '/api': 'http://localhost:8080',
       '/ws':  'http://localhost:8080'
