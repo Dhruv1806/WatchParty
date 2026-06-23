@@ -47,7 +47,7 @@ public class RoomService {
         if (room.getPeerCount() == 0) {
             rooms.remove(roomId);
         }
-        return true;
+        return !rooms.containsKey(roomId);
     }
 
     public boolean deleteRoomIfEmpty(String roomId) {
