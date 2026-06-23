@@ -71,6 +71,7 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
 
   return (
     <div className="room">
+      <div className="edge-trigger edge-trigger-top" />
       <header className="topbar">
         <div className="topbar-left">
           <span className="logo-sm">🎬</span>
@@ -86,7 +87,7 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
         </div>
       </header>
 
-      <main className="main-area">
+      <main className="main-area" >
         <div className="screen-area">
           {mediaNote && (
             <div className="media-note">
@@ -126,6 +127,7 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
         </aside>
       </main>
 
+      <div className="edge-trigger edge-trigger-bottom" />
       <footer className="controls">
         <button
           className={`ctrl-btn ${micMuted ? 'ctrl-off' : ''}`}

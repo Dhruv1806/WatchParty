@@ -319,3 +319,80 @@ h1 {
   flex-shrink: 0;
 }
 .media-note button:hover { color: var(--text); }
+
+
+/* Hover-reveal chrome */
+.edge-trigger {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 29;
+  background: transparent;
+}
+
+.edge-trigger-top {
+  top: 0;
+  height: 24px;
+}
+
+.edge-trigger-bottom {
+  bottom: 0;
+  height: 28px;
+}
+
+.topbar,
+.controls {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  will-change: opacity, transform;
+}
+
+.topbar {
+  opacity: 0;
+  transform: translateY(-110%);
+  pointer-events: none;
+}
+
+.controls {
+  opacity: 0;
+  transform: translateY(110%);
+  pointer-events: none;
+}
+
+.edge-trigger-top:hover ~ .topbar,
+.topbar:hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.edge-trigger-bottom:hover ~ .controls,
+.controls:hover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+
+/* Hover-reveal overlay layout */
+.room > .main-area {
+  height: 100vh;
+  min-height: 100vh;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.topbar,
+.controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 40;
+}
+
+.topbar {
+  top: 0;
+}
+
+.controls {
+  bottom: 0;
+}
