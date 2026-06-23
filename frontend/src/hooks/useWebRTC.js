@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://watchparty-itss.onrender.com'
-console.log('Using backend URL:', import.meta.env.VITE_BACKEND_URL || "nothing found")
+import { BACKEND_URL } from '../config/backendUrl'
 
 const ICE_SERVERS = {
   iceServers: [
