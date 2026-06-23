@@ -1,15 +1,22 @@
 package com.movieparty.service;
 
 import com.movieparty.model.Room;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RoomService {
+    private final ConcurrentHashMap<String, Room> rooms = new ConcurrentHashMap<>();
 
-    private final Map<String, Room> rooms = new ConcurrentHashMap<>();
+    public int getRoomCount() {
+        return rooms.size();
+    }
+
+    public Collection<Room> getAllRooms() {
+        return rooms.values();
+    }
 
     public Room createRoom(String hostId, String displayName) {
         String roomId = generateRoomCode();
@@ -25,18 +32,30 @@ public class RoomService {
 
     public boolean joinRoom(String roomId, String peerId, String displayName) {
         Room room = rooms.get(roomId);
-        if (room == null || room.isFull()) return false;
+        if (room == null || room.isFull()) {
+            return false;
+        }
         return room.addPeer(peerId, displayName);
     }
 
-    public void leaveRoom(String roomId, String peerId) {
+    public boolean leaveRoom(String roomId, String peerId) {
         Room room = rooms.get(roomId);
-        if (room == null) return;
+        if (room == null) {
+            return false;
+        }
         room.removePeer(peerId);
-        // Clean up empty rooms
         if (room.getPeerCount() == 0) {
             rooms.remove(roomId);
         }
+        return true;
+    }
+
+    public boolean deleteRoomIfEmpty(String roomId) {
+        Room room = rooms.get(roomId);
+        if (room == null || room.getPeerCount() > 0) {
+            return false;
+        }
+        return rooms.remove(roomId, room);
     }
 
     public boolean roomExists(String roomId) {
@@ -45,13 +64,15 @@ public class RoomService {
 
     private String generateRoomCode() {
         String chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-        Random rng = new Random();
         StringBuilder sb = new StringBuilder(6);
         for (int i = 0; i < 6; i++) {
-            sb.append(chars.charAt(rng.nextInt(chars.length())));
+            int idx = (int) (Math.random() * chars.length());
+            sb.append(chars.charAt(idx));
         }
         String code = sb.toString();
-        // Ensure uniqueness
-        return rooms.containsKey(code) ? generateRoomCode() : code;
+        if (rooms.containsKey(code)) {
+            return generateRoomCode();
+        }
+        return code;
     }
 }

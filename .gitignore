@@ -27,6 +27,9 @@ Thumbs.db
 # IDE/editor files
 .idea/
 .vscode/
+.serena/
+.agents/
+.codex/
 *.iml
 *.class
 

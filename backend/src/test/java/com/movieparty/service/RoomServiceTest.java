@@ -40,8 +40,18 @@ class RoomServiceTest {
         RoomService roomService = new RoomService();
         Room room = roomService.createRoom("host-1", "Host");
 
-        roomService.leaveRoom(room.getRoomId(), "host-1");
-
+        assertThat(roomService.leaveRoom(room.getRoomId(), "host-1")).isTrue();
         assertThat(roomService.roomExists(room.getRoomId())).isFalse();
+    }
+
+    @Test
+    void leaveRoomKeepsRoomWhenPeersRemain() {
+        RoomService roomService = new RoomService();
+        Room room = roomService.createRoom("host-1", "Host");
+        roomService.joinRoom(room.getRoomId(), "peer-2", "Peer 2");
+
+        assertThat(roomService.leaveRoom(room.getRoomId(), "host-1")).isFalse();
+        assertThat(roomService.roomExists(room.getRoomId())).isTrue();
+        assertThat(room.getPeerCount()).isEqualTo(1);
     }
 }

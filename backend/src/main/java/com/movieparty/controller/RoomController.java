@@ -5,6 +5,7 @@ import com.movieparty.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -70,4 +71,22 @@ public class RoomController {
         boolean exists = roomService.roomExists(roomId);
         return ResponseEntity.ok(Map.of("exists", exists));
     }
+    // GET /api/rooms/stats
+    @GetMapping("/stats")
+public ResponseEntity<?> getStats() {
+    List<Map<String, Object>> roomDetails = roomService.getAllRooms()
+        .stream()
+        .map(room -> Map.<String, Object>of(
+            "roomId",    room.getRoomId(),
+            "hostId",    room.getHostId(),
+            "peerCount", room.getPeerCount()
+        ))
+        .toList();
+
+    return ResponseEntity.ok(Map.of(
+        "roomCount", roomDetails.size(),
+        "rooms",     roomDetails
+    ));
+}
+
 }

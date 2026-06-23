@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { BACKEND_URL } from '../config/backendUrl'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://watchparty-itss.onrender.com'
-console.log('Using backend URL:', import.meta.env.VITE_BACKEND_URL || "nothing found")
 
 export default function Home({ onEnterRoom }) {
   const [displayName, setDisplayName] = useState('')
