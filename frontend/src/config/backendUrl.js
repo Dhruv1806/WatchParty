@@ -1,7 +1,3 @@
-const rawBackendUrl = import.meta.env.VITE_BACKEND_URL
+const rawBackendUrl = import.meta.env.VITE_BACKEND_URL?.trim() || 'https://movieparty-backend.onrender.com'
 
-if (!rawBackendUrl) {
-  throw new Error('VITE_BACKEND_URL is not set')
-}
-
-export const BACKEND_URL = rawBackendUrl.replace(/\/+$/, "")
+export const BACKEND_URL = rawBackendUrl.replace(/\/+$/, '')

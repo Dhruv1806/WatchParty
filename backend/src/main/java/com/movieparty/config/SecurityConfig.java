@@ -17,10 +17,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
-    @Value("${movieparty.admin.username}")
+    @Value("${movieparty.admin.username:admin}")
     private String adminUsername;
 
-    @Value("${movieparty.admin.password}")
+    @Value("${movieparty.admin.password:password}")
     private String adminPassword;
 
     @Bean
@@ -30,10 +30,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        if (adminUsername == null || adminUsername.isBlank() || adminPassword == null || adminPassword.isBlank()) {
-            throw new IllegalStateException("Set MOVIEPARTY_ADMIN_USERNAME and MOVIEPARTY_ADMIN_PASSWORD before starting the backend.");
-        }
-
         return new InMemoryUserDetailsManager(
                 User.withUsername(adminUsername)
                         .password(passwordEncoder.encode(adminPassword))

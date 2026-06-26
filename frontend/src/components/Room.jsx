@@ -20,6 +20,8 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
 
   // Auto-start webcam once on enter (guard against StrictMode double-run)
   const [mediaNote, setMediaNote] = useState('')
+  const [isPanelOpen, setIsPanelOpen] = useState(true)
+  const [floatedTiles, setFloatedTiles] = useState({})
   useEffect(() => {
     if (webcamStarted.current) return
     webcamStarted.current = true
@@ -69,8 +71,17 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
   // Guests: the screen stream now comes explicitly tagged from any peer
   const hostScreenStream = peers.find(p => p.screen)?.screen || null
 
+  const allParticipants = [
+    { id: 'local', displayName: displayName, stream: localWebcam, isLocal: true },
+    ...peers.map(p => ({ id: p.peerId, displayName: p.displayName, stream: p.webcam, isLocal: false }))
+  ]
+
+  const gridParticipants = allParticipants.filter(p => !floatedTiles[p.id])
+  const floatingParticipants = allParticipants.filter(p => floatedTiles[p.id])
+
   return (
     <div className="room">
+      <div className="edge-trigger edge-trigger-top" />
       <header className="topbar">
         <div className="topbar-left">
           <span className="logo-sm">🎬</span>
@@ -86,7 +97,7 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
         </div>
       </header>
 
-      <main className="main-area">
+      <main className="main-area" >
         <div className="screen-area">
           {mediaNote && (
             <div className="media-note">
@@ -118,14 +129,62 @@ export default function Room({ roomId, peerId, displayName, isHost }) {
           )}
         </div>
 
-        <aside className="webcam-grid">
-          <VideoTile stream={localWebcam} label={displayName} isLocal />
-          {peers.map(peer => (
-            <VideoTile key={peer.peerId} stream={peer.webcam} label={peer.displayName} />
-          ))}
+        <aside className={`webcam-grid side-panel ${isPanelOpen ? 'open' : 'collapsed'}`} onMouseEnter={() => !isPanelOpen && setIsPanelOpen(true)}>
+          {isPanelOpen ? (
+            <>
+              <div className="panel-head">
+                <span>Guests</span>
+                <div className="panel-actions">
+                  <button type="button" onClick={(e) => { e.stopPropagation(); setIsPanelOpen(false); }} title="Minimize">−</button>
+                </div>
+              </div>
+              <div className="webcam-grid-scroll">
+                {gridParticipants.map(p => (
+                  <VideoTile
+                    key={p.id}
+                    stream={p.stream}
+                    label={p.displayName}
+                    isLocal={p.isLocal}
+                    onFloat={(pos) => {
+                      setFloatedTiles(prev => ({
+                        ...prev,
+                        [p.id]: pos
+                      }))
+                    }}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <button type="button" className="panel-peek" onClick={() => setIsPanelOpen(true)} aria-label="Open guests panel">?</button>
+          )}
         </aside>
+
+        {floatingParticipants.length > 0 && (
+          <div className="floating-tiles">
+            {floatingParticipants.map(p => (
+              <VideoTile
+                key={p.id}
+                stream={p.stream}
+                label={p.displayName}
+                isLocal={p.isLocal}
+                movable
+                floating
+                defaultPosition={floatedTiles[p.id]}
+                onDock={() => {
+                  setFloatedTiles(prev => {
+                    const next = { ...prev }
+                    delete next[p.id]
+                    return next
+                  })
+                }}
+              />
+            ))}
+          </div>
+        )}
       </main>
 
+      <div className="edge-trigger edge-trigger-bottom" />
       <footer className="controls">
         <button
           className={`ctrl-btn ${micMuted ? 'ctrl-off' : ''}`}

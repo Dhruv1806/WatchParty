@@ -82,11 +82,8 @@ public class SignalingController {
         if (participant == null || !participant.roomId().equals(roomId)) {
             return;
         }
-
-        boolean removed = roomService.leaveRoom(participant.roomId(), participant.peerId());
-        if (removed) {
-            broadcastPeerLeft(participant.roomId(), participant.peerId());
-        }
+        roomService.leaveRoom(participant.roomId(), participant.peerId());
+        broadcastPeerLeft(participant.roomId(), participant.peerId());
     }
 
     private void handleRelay(String roomId, SignalMessage message, String sessionId) {
